@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Log In - Notely{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center w-full h-[calc(100vh-65px)] bg-background">
+    <div class="bg-surface p-8 mx-4 w-full max-w-sm rounded-[24px] shadow-soft border border-light">
+        <h2 class="text-2xl font-bold mb-6 text-center tracking-tight">Welcome Back</h2>
+        
+        <form action="{{ url_for('login') }}" method="post" class="space-y-4">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="space-y-1">
+                <label for="username" class="text-sm font-medium text-secondary">Username</label>
+                <input type="text" name="username" id="username" required autofocus
+                       class="w-full px-4 py-3 bg-background border border-light rounded-xl focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                       placeholder="Enter your username">
+            </div>
+            
+            <div class="space-y-1">
+                <label for="password" class="text-sm font-medium text-secondary">Password</label>
+                <input type="password" name="password" id="password" required
+                       class="w-full px-4 py-3 bg-background border border-light rounded-xl focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all"
+                       placeholder="Enter your password">
+            </div>
+            
+            <button type="submit" 
+                    class="w-full bg-accent text-white font-medium py-3 px-4 rounded-xl hover:bg-accent-hover transition-colors shadow-sm mt-4">
+                Log In
+            </button>
+        </form>
+        
+        <p class="mt-6 text-center text-sm text-secondary">
+            Don't have an account? 
+            <a href="{{ url_for('register') }}" class="text-accent font-medium hover:underline">Sign up</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

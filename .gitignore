@@ -1,0 +1,15 @@
+instance/
+.web_application_development/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+database.db
+.vscode/
+.idea/

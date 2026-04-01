@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Notely{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        /* This prevents flash of unstyled content during dark mode transition */
+        html { display: none; }
+    </style>
+    <script>
+        // Check for dark mode preference and apply immediately
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+        document.documentElement.style.display = 'block';
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--color-bg)',
+                        surface: 'var(--color-surface)',
+                        primary: 'var(--color-text-primary)',
+                        secondary: 'var(--color-text-secondary)',
+                        light: 'var(--color-border)',
+                        hover: 'var(--color-hover)',
+                        accent: 'var(--color-accent)',
+                        "accent-hover": 'var(--color-accent-hover)',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-primary transition-colors duration-200 antialiased h-screen flex flex-col font-sans">
+    
+    <nav class="border-b border-light px-6 py-3 flex justify-between items-center bg-surface sticky top-0 z-10 transition-colors">
+        <div class="flex items-center gap-4">
+            <a href="{{ url_for('dashboard') }}" class="text-xl font-bold tracking-tight hover:opacity-80 transition flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open opacity-80"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg> 
+                Notely
+            </a>
+        </div>
+        
+        <div class="flex items-center gap-4 text-sm font-medium">
+            <button id="theme-toggle" class="p-2 rounded-full hover:bg-hover transition-colors" title="Toggle dark mode">
+                <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path></svg>
+            </button>
+            
+            {% if g.user %}
+                <span class="text-secondary">Hello, {{ g.user['username'] }}</span>
+                <a href="{{ url_for('logout') }}" class="text-red-500 hover:text-red-600 transition">Logout</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="hover:text-accent transition">Log In</a>
+                <a href="{{ url_for('register') }}" class="bg-accent text-white px-4 py-2 rounded-md hover:bg-accent-hover transition shadow-sm">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- Flash Messages Container -->
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-md px-4 pointer-events-none" id="flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div x-data="{ show: true }" 
+                         x-show="show" 
+                         x-init="setTimeout(() => show = false, 4000)"
+                         x-transition.duration.300ms
+                         class="pointer-events-auto flex items-center justify-between p-4 rounded-lg shadow-lg border {% if category == 'success' %}bg-green-100 border-green-200 text-green-800 dark:bg-green-900/40 dark:border-green-800 dark:text-green-300{% elif category == 'error' %}bg-red-100 border-red-200 text-red-800 dark:bg-red-900/40 dark:border-red-800 dark:text-red-300{% else %}bg-blue-100 border-blue-200 text-blue-800 dark:bg-blue-900/40 dark:border-blue-800 dark:text-blue-300{% endif %}">
+                        <span class="text-sm font-medium">{{ message }}</span>
+                        <button @click="show = false" class="focus:outline-none opacity-50 hover:opacity-100 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="flex-grow flex overflow-hidden">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+:root {
+    /* Define variables for Notion-like Light Mode */
+    --color-bg: #ffffff;
+    --color-surface: #f7f7f5;
+    --color-text-primary: #37352f;
+    --color-text-secondary: #787774;
+    --color-border: #e9e9e7;
+    --color-hover: #efefed;
+    --color-accent: #2383e2;
+    --color-accent-hover: #0c6ac4;
+}
+
+:root.dark {
+    /* Define variables for Notion-like Dark Mode */
+    --color-bg: #191919;
+    --color-surface: #202020;
+    --color-text-primary: #ffffffe6;
+    --color-text-secondary: #ffffff80;
+    --color-border: #ffffff1a;
+    --color-hover: #ffffff0e;
+    --color-accent: #2eaac0;
+    --color-accent-hover: #228496;
+}
+
+/* Custom scrollbar to match the minimal aesthetic */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-text-secondary);
+}
+
+/* Base resets or font modifications */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Focus styles for accessibility without compromising design */
+*:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+input, textarea {
+    font-family: inherit;
+}
